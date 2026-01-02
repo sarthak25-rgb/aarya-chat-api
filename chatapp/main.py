@@ -3,8 +3,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import os
 from dotenv import load_dotenv
-load_dotenv()
 
+load_dotenv()
 
 from chatapp.routes.chat import router as chat_router
 from chatapp.routes.predefined import router as predefined_router
@@ -14,13 +14,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# API routes
+# ---------------- API ROUTES ----------------
 app.include_router(chat_router, prefix="/api/chat")
 app.include_router(predefined_router, prefix="/api/predefined")
 
-# ---------- FRONTEND ----------
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FRONTEND_PATH = os.path.join(BASE_DIR, "frontend")
+# ---------------- FRONTEND ----------------
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
+FRONTEND_PATH = os.path.join(PROJECT_ROOT, "frontend")
 
 app.mount("/static", StaticFiles(directory=FRONTEND_PATH), name="static")
 
