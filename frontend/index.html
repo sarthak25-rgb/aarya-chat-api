@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Aarya – Bharat Car</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+.chat-box {
+    width: 420px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 16px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    height: 560px;
+}
+
+/* ================= HEADER ================= */
+.header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 14px;
+}
+
+.header-text h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.header-text small {
+    color: #666;
+    font-size: 13px;
+}
+
+/* ================= ROBOT AVATAR ================= */
+.robot-face {
+    width: 72px;
+    height: 56px;
+    background: linear-gradient(145deg,#ff2b2b,#b30000);
+    border-radius: 40px;
+    position: relative;
+    box-shadow:
+        inset 0 3px 5px rgba(255,255,255,0.35),
+        inset 0 -5px 8px rgba(0,0,0,0.35),
+        0 8px 20px rgba(0,0,0,0.25);
+}
+
+.robot-face .antenna {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 10px;
+    background: #333;
+    border-radius: 3px;
+}
+
+.robot-face .antenna::after {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: -5px;
+    width: 16px;
+    height: 16px;
+    background: radial-gradient(circle, #4dd2ff, #0066cc);
+    border-radius: 50%;
+    box-shadow: 0 0 10px #4dd2ff;
+}
+
+.robot-face .visor {
+    position: absolute;
+    top: 14px;
+    left: 8px;
+    right: 8px;
+    height: 26px;
+    background: linear-gradient(180deg,#220000,#000000);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.robot-face .eye {
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, #b3f0ff, #00ccff);
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00ccff,0 0 14px rgba(0,204,255,0.9);
+}
+
+.robot-face .visor::after {
+    content: "";
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 4px;
+    border-bottom: 2px solid rgba(0,204,255,0.6);
+    border-radius: 0 0 10px 10px;
+}
+
+/* ================= CHAT ================= */
+.messages {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    background: #fafafa;
+    border-radius: 14px;
+}
+
+.user {
+    text-align: right;
+    margin: 10px 0;
+}
+.user span {
+    background: #e50914;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 16px 16px 0 16px;
+    display: inline-block;
+    max-width: 80%;
+}
+
+.bot {
+    text-align: left;
+    margin: 10px 0;
+}
+.bot span {
+    background: #e9e9e9;
+    padding: 8px 12px;
+    border-radius: 16px 16px 16px 0;
+    display: inline-block;
+    max-width: 80%;
+}
+
+/* ===== FADE-IN EFFECT (NEW) ===== */
+.bot.fade-in span {
+    opacity: 0;
+    animation: fadeInText 0.8s ease forwards;
+}
+
+@keyframes fadeInText {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================= FAQ ================= */
+.suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 14px 0;
+}
+
+.suggestion span {
+    background: #FFECED;
+    padding: 7px 14px;
+    border-radius: 18px;
+    font-size: 13px;
+    cursor: pointer;
+    width: fit-content;
+    display: inline-block;
+    margin-bottom: 4px;
+}
+
+/* ================= INPUT ================= */
+.input-row {
+    display: flex;
+    gap: 8px;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 16px;
+    background: #e50914;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="chat-box">
+
+<div class="header">
+    <div class="robot-face">
+        <div class="antenna"></div>
+        <div class="visor">
+            <span class="eye"></span>
+            <span class="eye"></span>
+        </div>
+    </div>
+    <div class="header-text">
+        <h2>Aarya</h2>
+        <small>Chat Support</small>
+    </div>
+</div>
+
+<div class="messages" id="messages"></div>
+<div class="suggestions" id="suggestions"></div>
+
+<div class="input-row">
+    <input id="messageInput" placeholder="Type your message..."
+           onkeypress="if(event.key==='Enter'){sendMessage()}">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+</div>
+
+<script>
+const questions = [
+ "Is there any security deposit required?",
+ "What documents are required to book a car?",
+ "How will I get my refund if I cancel a booking?",
+ "Who pays for fuel, tolls, and parking?",
+ "What happens if the car gets damaged during my trip?"
+];
+
+function renderFaq() {
+    const box = document.getElementById("suggestions");
+    questions.forEach(q => {
+        const d = document.createElement("div");
+        d.className = "suggestion";
+        d.innerHTML = `<span onclick="useFaq('${q}')">${q}</span>`;
+        box.appendChild(d);
+    });
+}
+
+function addMessage(text, type) {
+    const d = document.createElement("div");
+    d.className = type;
+    if (type === "bot") d.classList.add("fade-in"); // fade only bot text
+    d.innerHTML = `<span>${text}</span>`;
+    document.getElementById("messages").appendChild(d);
+    document.getElementById("messages").scrollTop = 9999;
+}
+
+/* FAQ behaves like chat input */
+function useFaq(q) {
+    const suggestions = document.getElementById("suggestions");
+    if (suggestions) suggestions.remove();
+
+    document.getElementById("messageInput").value = q;
+    sendMessage();
+}
+
+async function sendMessage() {
+    const i = document.getElementById("messageInput");
+    if (!i.value) return;
+
+    const msg = i.value;
+    addMessage(msg, "user");
+    i.value = "";
+
+    const r = await fetch("/api/chat/", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ session_id: "user", message: msg })
+    });
+
+    const d = await r.json();
+    addMessage(d.reply, "bot");
+}
+
+/* ===== AUTO GREETING ON LOAD (NEW) ===== */
+window.onload = () => {
+    fetch("/api/chat/", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ session_id: "user", message: "" })
+    })
+    .then(r => r.json())
+    .then(d => addMessage(d.reply, "bot"));
+};
+
+renderFaq();
+</script>
+
+</body>
+</html>
