@@ -146,21 +146,15 @@ body {
     max-width: 80%;
 }
 
-/* ===== FADE-IN EFFECT (NEW) ===== */
+/* ===== FADE-IN EFFECT ===== */
 .bot.fade-in span {
     opacity: 0;
     animation: fadeInText 0.8s ease forwards;
 }
 
 @keyframes fadeInText {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* ================= FAQ ================= */
@@ -236,6 +230,8 @@ button {
 </div>
 
 <script>
+const API_BASE = window.location.origin;
+
 const questions = [
  "Is there any security deposit required?",
  "What documents are required to book a car?",
@@ -257,17 +253,15 @@ function renderFaq() {
 function addMessage(text, type) {
     const d = document.createElement("div");
     d.className = type;
-    if (type === "bot") d.classList.add("fade-in"); // fade only bot text
+    if (type === "bot") d.classList.add("fade-in");
     d.innerHTML = `<span>${text}</span>`;
     document.getElementById("messages").appendChild(d);
     document.getElementById("messages").scrollTop = 9999;
 }
 
-/* FAQ behaves like chat input */
 function useFaq(q) {
     const suggestions = document.getElementById("suggestions");
     if (suggestions) suggestions.remove();
-
     document.getElementById("messageInput").value = q;
     sendMessage();
 }
@@ -280,7 +274,7 @@ async function sendMessage() {
     addMessage(msg, "user");
     i.value = "";
 
-    const r = await fetch("/api/chat/", {
+    const r = await fetch(`${API_BASE}/api/chat/`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({ session_id: "user", message: msg })
@@ -290,9 +284,8 @@ async function sendMessage() {
     addMessage(d.reply, "bot");
 }
 
-/* ===== AUTO GREETING ON LOAD (NEW) ===== */
 window.onload = () => {
-    fetch("/api/chat/", {
+    fetch(`${API_BASE}/api/chat/`, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({ session_id: "user", message: "" })
