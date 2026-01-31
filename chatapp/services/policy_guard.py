@@ -67,12 +67,12 @@ def get_policy_answer(user_question: str) -> str:
         client = get_groq_client()
 
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="groq-1.5-turbo-16k",
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": user_question}
             ],
-            temperature=0,
+            temperature=0.3,
             max_tokens=250
         )
 
