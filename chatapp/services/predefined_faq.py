@@ -1,18 +1,26 @@
-# chatbot_api/chatapp/services/predefined_faq.py
+from fastapi import APIRouter
+from pydantic import BaseModel
 
-PREDEFINED_FAQ = {
-    "Is there any security deposit required?":
-        "Yes, a refundable security deposit may apply based on the car and booking.",
+from chatapp.services.predefined_faq import PREDEFINED_FAQ
+from chatapp.services.policy_guard import get_policy_answer
 
-    "What documents are required to book a car?":
-        "A valid driving license and a government-issued ID are required.",
+router = APIRouter()
 
-    "How will I get my refund if I cancel a booking?":
-        "Eligible refunds are processed as per our Refund Policy.",
 
-    "Who pays for fuel, tolls, and parking?":
-        "Fuel, tolls, and parking are paid by the customer.",
+class ChatRequest(BaseModel):
+    session_id: str
+    message: str
 
-    "What happens if the car gets damaged during my trip?":
-        "Damages are handled under our Damage Protection Policy."
-}
+
+@router.post("/")
+def predefined_chat(req: ChatRequest):
+    user_message = req.message.strip()
+
+    # 1. exact FAQ match
+    if user_message in PREDEFINED_FAQ:
+        return {"reply": PREDEFINED_FAQ[user_message]}
+
+    # 2. fallback to strict policy bot
+    reply = get_policy_answer(user_message)
+
+    return {"reply": reply}
