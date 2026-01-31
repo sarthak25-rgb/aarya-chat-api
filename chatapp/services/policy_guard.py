@@ -10,7 +10,7 @@ PERSONALITY:
 - Friendly
 - Polite
 - Calm
-- Helpful
+- Helpfulz
 - Human-like (not robotic)
 
 GENERAL BEHAVIOR:
